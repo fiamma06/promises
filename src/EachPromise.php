@@ -91,6 +91,10 @@ class EachPromise implements PromisorInterface
         $this->mutex = false;
         $this->aggregate = new Promise(function () {
             reset($this->pending);
+            if (empty($this->pending) && !$this->iterable->valid()) {
+                 $this->aggregate->resolve(null);
+                 return;
+             }
             // Consume a potentially fluctuating list of promises while
             // ensuring that indexes are maintained (precluding array_shift).
             while ($promise = current($this->pending)) {
